@@ -1,0 +1,161 @@
+from PyQt4 import QtGui
+from PyQt4 import QtCore
+import sys
+
+class MainWindow(QtGui.QWidget):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setWindowTitle('Filter Fitter Prototype')
+        self.setStyleSheet("color:black")
+        self.grid = QtGui.QGridLayout()
+
+        self.label0 = QtGui.QLabel("Desired Characteristics")
+        self.label0.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label0,1,0,1,2)
+
+        self.label1 = QtGui.QLabel("Of Filter's")
+        self.label1.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label1,2,0,1,2)
+
+        self.label2 = QtGui.QLabel("Frequency Response")
+        self.label2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label2,3,0,1,2)
+
+        self.label3 = QtGui.QLabel("fo")
+        self.label3.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label3,4,0,1,1)
+        self.label3Edit = QtGui.QLineEdit()
+        #self.label3Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label3Edit,4,1,1,1)
+
+        self.label4 = QtGui.QLabel("A")
+        self.label4.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label4,5,0,1,1)
+        self.label4Edit = QtGui.QLineEdit()
+        #self.label4Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label4Edit,5,1,1,1)
+
+        self.label5 = QtGui.QLabel("Q")
+        self.label5.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label5,6,0,1,1)
+        self.label5Edit = QtGui.QLineEdit()
+        #self.label5Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label5Edit,6,1,1,1)
+
+        self.label6 = QtGui.QLabel("Approximated Mobil Parameter")
+        self.label6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label6,7,0,1,2)
+
+        self.label6 = QtGui.QLabel("C")
+        self.label6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label6,8,0,1,1)
+        self.label6Edit = QtGui.QLineEdit()
+        #self.label6Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label6Edit,8,1,1,1)
+
+        self.label6 = QtGui.QLabel("Parameter's Tolerance")
+        self.label6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label6,9,0,1,2)
+
+        self.label7 = QtGui.QLabel("R1a tol")
+        self.label7.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label7,10,0,1,1)
+        self.label7Edit = QtGui.QLineEdit()
+        #self.label7Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label7Edit,10,1,1,1)
+
+        self.label8 = QtGui.QLabel("R1b tol")
+        self.label8.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label8,11,0,1,1)
+        self.label8Edit = QtGui.QLineEdit()
+        #self.label8Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label8Edit,11,1,1,1)
+
+        self.label9 = QtGui.QLabel("R2 tol")
+        self.label9.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label9,12,0,1,1)
+        self.label9Edit = QtGui.QLineEdit()
+        #self.label9Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label9Edit,12,1,1,1)
+
+        self.label10 = QtGui.QLabel("C tol")
+        self.label10.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.label10,13,0,1,1)
+        self.label10Edit = QtGui.QLineEdit()
+        #self.label10Edit.setFixedWidth(200)
+        self.grid.addWidget(self.label10Edit,13,1,1,1)
+
+        self.labelb1 = QtGui.QLabel("Type of Filter")
+        self.labelb1.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb1,1,2,1,1)
+        self.comboxb1 = QtGui.QComboBox()
+        self.comboxb1.addItems(["low-pass","band-pass","notch"])
+        #self.labelb1Edit.setFixedWidth(200)
+        self.grid.addWidget(self.comboxb1,1,3,1,1)
+
+        self.labelb2 = QtGui.QLabel("Topology")
+        self.labelb2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.labelb2.setMinimumWidth(400)
+        #self.labelb2.setFixedHeight(400)
+        self.labelb2.setStyleSheet("border: 4px solid white; ")
+        self.grid.addWidget(self.labelb2,2,2,5,2)
+
+        self.boton = QtGui.QPushButton('CALCULATE', self)
+        self.boton.setStyleSheet("color:#2D2f37;")
+        #self.connect(self.boton, QtCore.SIGNAL('clicked()'),self.calcular)
+        #boton.setMinimumWidth(100)
+        self.grid.addWidget(self.boton,7,2,1,2)
+
+        self.labelb3 = QtGui.QLabel("Fitted Parameters")
+        self.labelb3.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb3,8,2,1,2)
+
+        self.labelb4 = QtGui.QLabel("C")
+        self.labelb4.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb4,9,2,1,1)
+        self.labelb4Edit = QtGui.QLineEdit()
+        #self.labelb4Edit.setFixedWidth(200)
+        self.grid.addWidget(self.labelb4Edit,9,3,1,1)
+
+        self.labelb5 = QtGui.QLabel("R1a")
+        self.labelb5.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb5,10,2,1,1)
+        self.labelb5Edit = QtGui.QLineEdit()
+        #self.labelb5Edit.setFixedWidth(200)
+        self.grid.addWidget(self.labelb5Edit,10,3,1,1)
+
+        self.labelb6 = QtGui.QLabel("R1b")
+        self.labelb6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb6,11,2,1,1)
+        self.labelb6Edit = QtGui.QLineEdit()
+        #self.labelb6Edit.setFixedWidth(200)
+        self.grid.addWidget(self.labelb6Edit,11,3,1,1)
+
+        self.labelb7 = QtGui.QLabel("R2")
+        self.labelb7.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb7,12,2,1,1)
+        self.labelb7Edit = QtGui.QLineEdit()
+        #self.labelb7Edit.setFixedWidth(200)
+        self.grid.addWidget(self.labelb7Edit,12,3,1,1)
+
+        self.labelb8 = QtGui.QLabel("MSE")
+        self.labelb8.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.grid.addWidget(self.labelb8,13,2,1,1)
+        self.labelb8Edit = QtGui.QLineEdit()
+        #self.labelb8Edit.setFixedWidth(200)
+        self.grid.addWidget(self.labelb8Edit,13,3,1,1)
+
+        self.labelbd = QtGui.QLabel("DIAGRAMA DE BODE")
+        self.labelbd.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.labelbd.setStyleSheet("border: 4px solid white;")
+        self.grid.addWidget(self.labelbd,14,0,1,4)
+        self.labelbd.setFixedWidth(800)
+        self.labelbd.setFixedHeight(200)
+
+        self.setLayout(self.grid)
+        #self.showMaximized()
+
+app = QtGui.QApplication(sys.argv)
+qb = MainWindow()
+qb.show()
+sys.exit(app.exec_())
