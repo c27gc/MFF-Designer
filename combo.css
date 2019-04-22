@@ -1,0 +1,42 @@
+QComboBox
+{
+    color: black;
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+    background-color: white;
+}
+
+
+QComboBox QListView:active
+{
+    background-color: #173f5f;
+    color: black;
+}
+
+QComboBox QListView
+{
+    color : white;
+    background-color: black;
+}
+
+
+QComboBox::drop-down
+{
+
+}
+
+QListView::item
+{
+  border-bottom: 5px solid white; margin:3px;
+}
+
+QListView::item:selected
+{
+  border-bottom: 5px solid black; margin:3px;
+  color: black;
+}
+
+QListView::item:checked
+{
+  background-color: green;
+  color: green;
+}

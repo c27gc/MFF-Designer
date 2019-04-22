@@ -76,4 +76,3 @@ class FilterFit(object):
         R1a = standardValueEquivalent(Q/(A*wo*CAux),tolR1a)
         R2 = standardValueEquivalent(2*Q/(2*wo*CAux),tolR2)
         return C, R1a, R1b, R2
-    #def pLow(self,f,Q,A,C):
