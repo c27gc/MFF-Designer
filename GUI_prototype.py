@@ -63,7 +63,8 @@ class MainWindow(QtGui.QWidget):
         self.label6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.grid.addWidget(self.label6,6,0,1,1)
         self.label6Edit = QtGui.QLineEdit()
-        self.label6Edit.editingFinished.connect(self.validation)
+        self.label6Edit.textChanged.connect(self.validation)
+        self.label6Edit.textEdited.connect(self.valaux)
         self.label6Edit.setStyleSheet(styleSheetStr2)
         #self.label6Edit.setFixedWidth(200)
         self.grid.addWidget(self.label6Edit,6,1,1,1)
@@ -129,6 +130,8 @@ class MainWindow(QtGui.QWidget):
         self.label102.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.grid.addWidget(self.label102,13,0,1,1)
         self.label102Edit = QtGui.QLineEdit()
+        self.label102Edit.setReadOnly(True)
+        self.label102Edit.setStyleSheet("background: lightgray")
         #self.label102Edit.setFixedWidth(200)
         self.grid.addWidget(self.label102Edit,13,1,1,1)
 
@@ -152,7 +155,7 @@ class MainWindow(QtGui.QWidget):
 
         self.boton = QtGui.QPushButton('CALCULATE', self)
         self.boton.setStyleSheet("color:white; background: #173f5f")##173f5f
-        #self.connect(self.boton, QtCore.SIGNAL('clicked()'),self.calcular)
+        self.connect(self.boton, QtCore.SIGNAL('clicked()'),self.calcular)
         #boton.setMinimumWidth(100)
         self.grid.addWidget(self.boton,7,2,1,2)
 
@@ -205,7 +208,7 @@ class MainWindow(QtGui.QWidget):
         self.labelbd = QtGui.QLabel("DIAGRAMA DE BODE")
         self.labelbd.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.labelbd.setStyleSheet("border: 4px solid white; background: #173f5f; color:white ")
-        self.labelbd.setText("USER$")
+        self.labelbd.setText("Status")
         self.grid.addWidget(self.labelbd,14,0,1,4)
         #self.labelbd.setFixedWidth(800)
         self.labelbd.setFixedHeight(200)
@@ -216,6 +219,40 @@ class MainWindow(QtGui.QWidget):
         self.setLayout(self.grid)
         self.showMaximized()
         self.count = True
+        self.validat = False
+        self.varAux = False
+
+    def valaux(self):
+        self.count = True
+        print("paso")
+
+    def calcular(self):
+        dic1 = {0:20, 1:10, 2:5, 3:2, 4:1, 5:0.5}
+        if self.validat:
+            if self.comboxb1.currentIndex() == 0:
+                Ctol = dic1[self.label10Edit.currentIndex()]
+                R1atol = dic1[self.label7Edit.currentIndex()]
+                R1btol = dic1[self.label8Edit.currentIndex()]
+                R2tol = dic1[self.label9Edit.currentIndex()]
+
+                C,R1a,R1b,R2 = self.pBand(self.fn,self.Qn,self.An,self.Cn,Ctol,R1atol,R1btol,R2tol)
+                self.labelb5Edit.setText(str(R1a))
+                self.labelb6Edit.setText(str(R1b))
+                self.labelb7Edit.setText(str(R2))
+                self.labelb4Edit.setText(str(C))
+            if self.comboxb1.currentIndex() == 1:
+                Ctol = dic1[self.label10Edit.currentIndex()]
+                R1tol = dic1[self.label7Edit.currentIndex()]
+                R2tol = dic1[self.label8Edit.currentIndex()]
+                R3tol = dic1[self.label9Edit.currentIndex()]
+
+                R1,R2,R3,C = self.pLow(self.fn,self.Qn,self.An,self.Cn,Ctol,R1tol,R2tol,R3tol,float(self.label102Edit.text()))
+                self.labelb5Edit.setText(str(R1))
+                self.labelb6Edit.setText(str(R2))
+                self.labelb7Edit.setText(str(R3))
+                self.labelb4Edit.setText(str(C))
+        else:
+            self.labelbd.setText("ERROR: No ha introducido en su totalidad o no pasaron la validación")
 
     def standardValueEquivalent(self,val,tol):
         #LA FUNCION CALCULA VALORES DE RESISTENCIA DESDE 0.001 hasta 955000000 (955M)
@@ -276,8 +313,8 @@ class MainWindow(QtGui.QWidget):
 
     def verification(self):
         if self.comboxb1.currentIndex() == 0:
-            self.label102Edit.setReadOnly(False)
-            self.label102Edit.setStyleSheet("background: white")
+            self.label102Edit.setReadOnly(True)
+            self.label102Edit.setStyleSheet("background: lightgray")
             self.label7.setText("R1a tol")
             self.label8.setText("R1b tol")
             self.label9.setText("R2 tol")
@@ -287,8 +324,8 @@ class MainWindow(QtGui.QWidget):
             self.labelb2.setPixmap(QtGui.QPixmap(os.getcwd() + "/pb.png"))
 
         if self.comboxb1.currentIndex() == 1:
-            self.label102Edit.setReadOnly(True)
-            self.label102Edit.setStyleSheet("background: lightgray")
+            self.label102Edit.setReadOnly(False)
+            self.label102Edit.setStyleSheet("background: white")
             self.label7.setText("R1 tol")
             self.label8.setText("R2 tol")
             self.label9.setText("R3 tol")
@@ -314,6 +351,8 @@ class MainWindow(QtGui.QWidget):
                 if fn>EngNumber("100G") or fn < EngNumber("0"):
                     str1 += "\n" + "fo-Error: La frecuencia debe estar en el intervalo [0,100G]"
                     error = True
+                else:
+                    self.fn = float(fn)
             except decimal.InvalidOperation:
                 str1 += "\n" + "fo-Error: Tipo de dato erroneo"
                 error = True
@@ -327,6 +366,8 @@ class MainWindow(QtGui.QWidget):
                 if An>EngNumber("10k") or An < EngNumber("0"):
                     str1 += "\n" + "A-Error: La ganancia debe estar en el intervalo [0,10k]"
                     error = True
+                else:
+                    self.An = float(An)
             except decimal.InvalidOperation:
                 str1 += "\n" + "A-Error: Tipo de dato erroneo"
                 error = True
@@ -340,6 +381,8 @@ class MainWindow(QtGui.QWidget):
                 if Qn>EngNumber("1k") or Qn < EngNumber("0"):
                     str1 += "\n" + "Q-Error: El factor de calidad debe estar en el intervalo [0,1k]"
                     error = True
+                else:
+                    self.Qn = float(Qn)
             except decimal.InvalidOperation:
                 str1 += "\n" + "Q-Error: Tipo de dato erroneo"
                 error = True
@@ -357,13 +400,18 @@ class MainWindow(QtGui.QWidget):
                     if self.count:
                         Cn = float(Cn)
                         self.KK = Cn
-                        print(self.KK)
+                        """print("KK:{}".format(self.KK))"""
                         g = str(EngNumber(self.standardValueEquivalent(Cn,C_tol_aux)))
                         self.label6Edit.setText(g)
                         self.count = False
+                        self.Cn = self.KK
                     else:
-                        g = str(EngNumber(self.standardValueEquivalent(self.KK,C_tol_aux)))
-                        self.label6Edit.setText(g)
+                        g = EngNumber(self.standardValueEquivalent(self.KK,C_tol_aux))
+                        """print("g:{}".format(g))
+                        print("KK2:{}".format(self.KK))"""
+                        self.Cn = float(g)
+                        self.label6Edit.setText(str(g))
+
             except decimal.InvalidOperation:
                 str1 += "\n" + "C-Error: Tipo de dato erroneo"
                 error = True
@@ -375,21 +423,37 @@ class MainWindow(QtGui.QWidget):
             self.labelbd.setText(str1)
         else:
             self.labelbd.setText("Datos válidos")
+            self.validat = True
 
 
     def pBand(self,f,Q,A,C,tolC,tolR1a,tolR1b,tolR2):
         wo = 2*np.pi*f
         CAux = C
-        R1aAux = Q/(A*wo*C)
-        R1bAux = R1a/((2*Q**(2))/(A-1))
-        R2Aux = 2*Q/(2*wo*C)
-
-        C = standardValueEquivalent(C,tolC)
-        R1b = standardValueEquivalent(R1aAux/((2*Q**(2))/(A-1)),tolR1b)
-        R1a = standardValueEquivalent(Q/(A*wo*CAux),tolR1a)
-        R2 = standardValueEquivalent(2*Q/(2*wo*CAux),tolR2)
+        R1aAux = Q/(A*wo*CAux)
+        R1bAux = R1aAux/(((2*(Q**2))/(A))-1)
+        R2Aux = 2*Q/(wo*CAux)
+        #print("R2Aux: {}\nR1bAux: {}\nR1aAux: {}".format(R2Aux,R1bAux,R1aAux))
+        C = EngNumber(self.standardValueEquivalent(C,tolC))
+        R1b = EngNumber(self.standardValueEquivalent(R1bAux,tolR1b))
+        R2 = EngNumber(self.standardValueEquivalent(R2Aux,tolR2))
+        R1a = EngNumber(self.standardValueEquivalent(R1aAux,tolR1a))
         return C, R1a, R1b, R2
 
+    def pLow(self,f,Q,A,C,tolC,tolR1,tolR2,tolR3,n):
+        wo = 2*np.pi*f
+        nC = n*C
+        R3Aux = (1+np.sqrt(1-((4*Q**2)*(1+A))/(n)))/(2*wo*Q*C)
+        #R3Aux = (1+np.sqrt(1-((4*Q**2)*(1+A))/(n)))/(2*wo*Q*C)
+        R1Aux = R3Aux/A
+        R2Aux = (1)/(wo**2*R3Aux*nC*C)
+
+        C2 = C
+        C1 = EngNumber(self.standardValueEquivalent(nC,tolC))
+        R1 = EngNumber(self.standardValueEquivalent(R1Aux,tolR1))
+        R2 = EngNumber(self.standardValueEquivalent(R2Aux,tolR2))
+        R3 = EngNumber(self.standardValueEquivalent(R3Aux,tolR3))
+
+        return R1, R2, R3, C
 app = QtGui.QApplication(sys.argv)
 qb = MainWindow()
 qb.show()
